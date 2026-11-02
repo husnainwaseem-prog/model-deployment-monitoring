@@ -1,0 +1,87 @@
+{
+  "phase1_in_distribution": {
+    "requests": 500,
+    "concurrency": 20,
+    "wall_seconds": 2.8,
+    "throughput_rps": 178.3,
+    "errors": 0,
+    "count": 500,
+    "mean_ms": 111.524,
+    "p50_ms": 43.05,
+    "p95_ms": 124.449,
+    "max_ms": 1785.281
+  },
+  "phase2_drifted": {
+    "requests": 200,
+    "concurrency": 20,
+    "wall_seconds": 1.71,
+    "throughput_rps": 116.7,
+    "errors": 0,
+    "count": 200,
+    "mean_ms": 160.87,
+    "p50_ms": 42.738,
+    "p95_ms": 1220.442,
+    "max_ms": 1478.556
+  },
+  "monitoring_after": {
+    "latency": {
+      "count": 700,
+      "mean_ms": 0.537,
+      "p50_ms": 0.346,
+      "p95_ms": 0.6,
+      "max_ms": 105.809
+    },
+    "drift": {
+      "drift": true,
+      "n_recent": 200,
+      "drifted_features": [
+        "sepal_length"
+      ],
+      "per_feature": {
+        "sepal_length": {
+          "recent_mean": 9.727,
+          "train_mean": 5.877678571428573,
+          "deviation": 3.8493,
+          "limit": 2.5483,
+          "drifted": true
+        },
+        "sepal_width": {
+          "recent_mean": 3.073,
+          "train_mean": 3.066071428571429,
+          "deviation": 0.0069,
+          "limit": 1.3251,
+          "drifted": false
+        },
+        "petal_length": {
+          "recent_mean": 3.6535,
+          "train_mean": 3.764285714285715,
+          "deviation": 0.1108,
+          "limit": 5.3273,
+          "drifted": false
+        },
+        "petal_width": {
+          "recent_mean": 1.1925,
+          "train_mean": 1.19375,
+          "deviation": 0.0013,
+          "limit": 2.3006,
+          "drifted": false
+        }
+      }
+    },
+    "training_baseline": {
+      "mean": {
+        "sepal_length": 5.877678571428573,
+        "sepal_width": 3.066071428571429,
+        "petal_length": 3.764285714285715,
+        "petal_width": 1.19375
+      },
+      "std": {
+        "sepal_length": 0.849444127212086,
+        "sepal_width": 0.44169995703057996,
+        "petal_length": 1.7757723240716345,
+        "petal_width": 0.7668676140638616
+      },
+      "n_train": 112
+    }
+  }
+}
