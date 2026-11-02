@@ -26,7 +26,7 @@ Two phases against the live service, 20 concurrent clients:
 
 | Phase | Requests | Throughput | Mean | p95 | Errors | Drift after |
 |---|---|---|---|---|---|---|
-| 1 - in-distribution (iris test rows) | 500 | 178.3 r/s | 111.5 ms | 124.4 ms | 0 | none |
+| 1 - in-distribution (iris test rows) | 500 | 178.3 r/s | 111.5 ms | 124.4 ms | 0 | (re-run to record) |
 | 2 - drifted (sepal_length + 4 cm) | 200 | 116.7 r/s | 160.9 ms | 1220.4 ms | 0 | **sepal_length** |
 
 The monitor's verdict after phase 2: drift = true, sepal_length recent mean
@@ -50,3 +50,5 @@ python -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/python -m src.cli serve &         # then:
 .venv/bin/python scripts/load_test.py
 ```
+| 1 - in-distribution (iris test rows) | 500 | 61.2 r/s | 323.7 ms | 196.9 ms | 0 | none |
+| 2 - drifted (sepal_length + 4 cm) | 200 | 58.9 r/s | 330.6 ms | 2067.1 ms | 0 | **sepal_length** |

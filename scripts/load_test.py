@@ -81,6 +81,10 @@ def main():
     print(f"phase 1: {args.n} in-distribution requests ...", flush=True)
     lat1, err1, wall1 = fire(args.url, phase1, args.concurrency)
 
+    # snapshot the monitor BEFORE the drifted phase, so "no drift on normal
+    # traffic" is measured rather than assumed
+    mon_phase1 = httpx.get(f"{args.url}/monitoring", timeout=30).json()
+
     phase2 = [dict(p, sepal_length=round(p["sepal_length"] + 4.0, 2))
               for p in phase1[:args.m]]
     print(f"phase 2: {args.m} drifted requests (sepal_length + 4cm) ...", flush=True)
@@ -101,6 +105,7 @@ def main():
             "throughput_rps": round(args.m / wall2, 1),
             "errors": len(err2), **compute_stats(lat2),
         },
+        "monitoring_after_phase1": mon_phase1,
         "monitoring_after": monitoring,
     }
     os.makedirs(RESULTS_DIR, exist_ok=True)
@@ -119,6 +124,7 @@ def main():
         f.write(table)
 
     mon = monitoring
+    m1 = mon_phase1["drift"]
     drifted = ", ".join(mon["drift"].get("drifted_features", [])) or "none"
     mout = (
         "# Monitoring output (captured right after the load test)\n\n"
@@ -129,12 +135,14 @@ def main():
         f"p95: {mon['latency']['p95_ms']} ms, "
         f"max: {mon['latency']['max_ms']} ms\n\n"
         "## Input drift\n\n"
-        f"- drift detected: **{mon['drift']['drift']}**\n"
+        f"- after phase 1 (in-distribution): drift detected **{m1['drift']}** "
+        f"(window {m1['n_recent']} inputs)\n"
+        f"- after phase 2 (shifted): drift detected **{mon['drift']['drift']}**\n"
         f"- drifted features: {drifted}\n"
         f"- recent window: {mon['drift']['n_recent']} inputs\n\n"
-        "Phase 1 (in-distribution) stayed inside the training baseline; "
-        "phase 2 shifted sepal_length by +4 cm and the monitor flagged it, "
-        "as designed.\n"
+        "Phase 1 is in-distribution (expect no drift); phase 2 shifts "
+        "sepal_length by +4 cm (expect the monitor to flag it). Both "
+        "snapshots above are the live /monitoring responses.\n"
     )
     with open(os.path.join(RESULTS_DIR, "monitoring_output.md"), "w") as f:
         f.write(mout)

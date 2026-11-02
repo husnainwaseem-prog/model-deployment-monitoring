@@ -3,12 +3,13 @@
 ## Prediction latency
 
 - predictions served: 700
-- mean: 0.537 ms, p50: 0.346 ms, p95: 0.6 ms, max: 105.809 ms
+- mean: 2.601 ms, p50: 1.041 ms, p95: 1.605 ms, max: 136.732 ms
 
 ## Input drift
 
-- drift detected: **True**
+- after phase 1 (in-distribution): drift detected **False** (window 200 inputs)
+- after phase 2 (shifted): drift detected **True**
 - drifted features: sepal_length
 - recent window: 200 inputs
 
-Phase 1 (in-distribution) stayed inside the training baseline; phase 2 shifted sepal_length by +4 cm and the monitor flagged it, as designed.
+Phase 1 is in-distribution (expect no drift); phase 2 shifts sepal_length by +4 cm (expect the monitor to flag it). Both snapshots above are the live /monitoring responses.
